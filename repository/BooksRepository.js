@@ -59,3 +59,38 @@ exports.deleteBook = async (id) => {
   }
   await db('livres').where({ id }).del();
 };
+
+// RECHERCHE
+exports.searchBooks = async (mots) => {
+  const words = mots.split(' ');
+
+  const books = await db('livres')
+    .leftJoin('auteur_livre', 'livres.id', 'auteur_livre.id_livre')
+    .leftJoin('auteurs', 'auteur_livre.id_auteur', 'auteurs.id')
+    .where(builder => {
+      words.forEach(word => {
+        builder.orWhere('livres.titre', 'like', `%${word}%`)
+          .orWhere('auteurs.nom', 'like', `%${word}%`)
+          .orWhere('auteurs.prenom', 'like', `%${word}%`);
+      });
+    })
+    .select('livres.*', 'auteurs.nom as auteur_nom', 'auteurs.prenom as auteur_prenom');
+
+  books.sort((a, b) => {
+    const aMatches = words.reduce((acc, word) => {
+      return acc + (a.titre.includes(word) ? 1 : 0) +
+        (a.auteur_nom.includes(word) ? 1 : 0) +
+        (a.auteur_prenom.includes(word) ? 1 : 0);
+    }, 0);
+
+    const bMatches = words.reduce((acc, word) => {
+      return acc + (b.titre.includes(word) ? 1 : 0) +
+        (b.auteur_nom.includes(word) ? 1 : 0) +
+        (b.auteur_prenom.includes(word) ? 1 : 0);
+    }, 0);
+
+    return bMatches - aMatches;
+  });
+
+  return books;
+};

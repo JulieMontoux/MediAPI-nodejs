@@ -58,3 +58,13 @@ exports.deleteBook = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.searchBooks = async (req, res) => {
+  const { mots } = req.params;
+  try {
+    const books = await bookRepository.searchBooks(mots);
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+};

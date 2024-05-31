@@ -13,4 +13,6 @@ router.post('/livre', bookController.createBook);
 
 router.delete('/livre/:id', bookController.deleteBook);
 
+router.get('/recherche/:mots', bookController.searchBooks);
+
 module.exports = router;
