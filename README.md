@@ -14,21 +14,20 @@
 
 ### Auteurs
 
-- [ ] **GET /auteur** : Retourne la liste des auteurs.
-- [ ] **GET /auteur/{id}** : Retourne la fiche de l’auteur portant l’ID indiquée.
-- [ ] **POST /auteur** : Crée l’auteur selon les informations du corps de la requête.
-- [ ] **PUT /auteur/{id}** : Modifie l’auteur selon les informations du corps de la requête.
-- [ ] **DELETE /auteur/{id}** : Supprime l’auteur. Retourne une erreur si l’auteur est utilisé par un ou plusieurs livres.
+- [x] **GET /auteur** : Retourne la liste des auteurs.
+- [x] **GET /auteur/{id}** : Retourne la fiche de l’auteur portant l’ID indiquée.
+- [x] **POST /auteur** : Crée l’auteur selon les informations du corps de la requête.
+- [x] **PUT /auteur/{id}** : Modifie l’auteur selon les informations du corps de la requête.
+- [x] **DELETE /auteur/{id}** : Supprime l’auteur. Retourne une erreur si l’auteur est utilisé par un ou plusieurs livres.
 
 ### Emprunts
 
-- [ ] **POST /emprunt** : Crée un emprunt selon les informations du corps de la requête. Le livre est choisi par son ID. La date d’emprunt est remplie automatiquement à la date du jour. Les informations de l’emprunteur permettent de le créer dans la table personnes s’il n’existe pas ou de le modifier s’il existe déjà (identification via l’email). Retourne une erreur si le le livre n’est pas empruntable (quantité disponible = zéro)
-- [ ] **PUT /emprunt/{id}** : Modifie l’emprunt (remplis la date de retour)
+- [x] **POST /emprunt** : Crée un emprunt selon les informations du corps de la requête. Le livre est choisi par son ID. La date d’emprunt est remplie automatiquement à la date du jour. Les informations de l’emprunteur permettent de le créer dans la table personnes s’il n’existe pas ou de le modifier s’il existe déjà (identification via l’email). Retourne une erreur si le le livre n’est pas empruntable (quantité disponible = zéro)
+- [x] **PUT /emprunt/{id}** : Modifie l’emprunt (remplis la date de retour)
 
 ### Recherche
 
-- [ ] **GET /recherche/{mots}** : Recherche des livres selon les mots fournis parmi le titre et le
-nom/prénom de l’auteur. Les résultats sont classés par taux de correspondance (à taux de correspondance égal, l’ordre n’a pas d’importance) Exemple : la recherche “hugo misérables” retournera le livre “Les Misérables” de Victor Hugo, puis l’ensemble des livres de Victor Hugo (peu importe leur ordre)
+- [ ] **GET /recherche/{mots}** : Recherche des livres selon les mots fournis parmi le titre et le nom/prénom de l’auteur. Les résultats sont classés par taux de correspondance (à taux de correspondance égal, l’ordre n’a pas d’importance) Exemple : la recherche “hugo misérables” retournera le livre “Les Misérables” de Victor Hugo, puis l’ensemble des livres de Victor Hugo (peu importe leur ordre)
 
 ## Base de données
 
