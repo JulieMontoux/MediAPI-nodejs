@@ -2,6 +2,12 @@
 
 ## Sujet
 
+- [x] Mise en place d’une API en NodeJS + ExpressJS écoutant sur le port 8000
+- [x] Sécurisation via API Key
+- [ ] Validation des modifications via ETag
+- [ ] 14 points d’entrée
+- [x] Recherche
+
 ### Livres
 
 - [x] **GET /livre** : Retourne la liste des livres avec les informations des auteurs.
@@ -27,7 +33,7 @@
 
 ### Recherche
 
-- [ ] **GET /recherche/{mots}** : Recherche des livres selon les mots fournis parmi le titre et le nom/prénom de l’auteur. Les résultats sont classés par taux de correspondance (à taux de correspondance égal, l’ordre n’a pas d’importance) Exemple : la recherche “hugo misérables” retournera le livre “Les Misérables” de Victor Hugo, puis l’ensemble des livres de Victor Hugo (peu importe leur ordre)
+- [x] **GET /recherche/{mots}** : Recherche des livres selon les mots fournis parmi le titre et le nom/prénom de l’auteur. Les résultats sont classés par taux de correspondance (à taux de correspondance égal, l’ordre n’a pas d’importance) Exemple : la recherche “hugo misérables” retournera le livre “Les Misérables” de Victor Hugo, puis l’ensemble des livres de Victor Hugo (peu importe leur ordre)
 
 ## Base de données
 
