@@ -11,7 +11,8 @@ Pour installer la base de données, suivez les étapes ci-dessous :
     Exécutez le script SQL pour créer les tables nécessaires dans votre base de données SQLite.
 
     ```bash
-    sqlite3 mediapi.db < data/Bibliothèque.sql
+    cd data
+    sqlite3 mediapi.db < Bibliothèque.sql
     ```
 
 2. **Insérer les données initiales :**
@@ -19,7 +20,7 @@ Pour installer la base de données, suivez les étapes ci-dessous :
     Exécutez le script SQL pour insérer les données de départ dans votre base de données.
 
     ```bash
-    sqlite3 mediapi.db < data/seed.sql
+    sqlite3 mediapi.db < seed.sql
     ```
 
 Ces commandes doivent être exécutées dans un terminal à partir de la racine du projet. Assurez-vous que les fichiers `Bibliothèque.sql` et `seed.sql` se trouvent dans le dossier `data`.
