@@ -1,5 +1,35 @@
 # MediAPI
 
+## Sujet
+
+### Livres
+
+- [x] **GET /livre** : Retourne la liste des livres avec les informations des auteurs.
+- [x] **GET /livre/{id}** : Retourne la fiche du livre portant l’ID indiquée, avec les informations des auteurs associés.
+- [x] **POST /livre** : Crée le livre selon les informations du corps de la requête. Les auteurs sont fournis par leurs IDs. La quantité en stock est initialisée à 1 si elle n’est pas fournie. Retourne une erreur si un auteur n’existe pas.
+- [ ] **PUT /livre/{id}** : Modifie le livre selon les informations du corps de la requête. Les auteurs sont fournis par leurs IDs. La quantité en stock n’est pas modifiable. Retourne une erreur si un auteur n’existe pas.
+- [x] **GET /livre/{id}/quantite** : Retourne la quantité totale et la quantité disponible pour le livre. Quantité disponible = quantité totale - nombre d’emprunts en cours.
+- [ ] **PUT /livre/{id}/quantite** : Modifie la quantité totale pour le livre. Retourne une erreur si la nouvelle quantité est inférieure au nombre d’emprunts actuellement en cours.
+- [x] **DELETE /livre/{id}** : Supprime le livre. Retourne une erreur si des emprunts sont en cours
+
+### Auteurs
+
+- [ ] **GET /auteur** : Retourne la liste des auteurs.
+- [ ] **GET /auteur/{id}** : Retourne la fiche de l’auteur portant l’ID indiquée.
+- [ ] **POST /auteur** : Crée l’auteur selon les informations du corps de la requête.
+- [ ] **PUT /auteur/{id}** : Modifie l’auteur selon les informations du corps de la requête.
+- [ ] **DELETE /auteur/{id}** : Supprime l’auteur. Retourne une erreur si l’auteur est utilisé par un ou plusieurs livres.
+
+### Emprunts
+
+- [ ] **POST /emprunt** : Crée un emprunt selon les informations du corps de la requête. Le livre est choisi par son ID. La date d’emprunt est remplie automatiquement à la date du jour. Les informations de l’emprunteur permettent de le créer dans la table personnes s’il n’existe pas ou de le modifier s’il existe déjà (identification via l’email). Retourne une erreur si le le livre n’est pas empruntable (quantité disponible = zéro)
+- [ ] **PUT /emprunt/{id}** : Modifie l’emprunt (remplis la date de retour)
+
+### Recherche
+
+- [ ] **GET /recherche/{mots}** : Recherche des livres selon les mots fournis parmi le titre et le
+nom/prénom de l’auteur. Les résultats sont classés par taux de correspondance (à taux de correspondance égal, l’ordre n’a pas d’importance) Exemple : la recherche “hugo misérables” retournera le livre “Les Misérables” de Victor Hugo, puis l’ensemble des livres de Victor Hugo (peu importe leur ordre)
+
 ## Base de données
 
 ### Installation de la base de données

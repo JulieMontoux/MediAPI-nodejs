@@ -39,17 +39,6 @@ exports.createBook = async (req, res) => {
   }
 };
 
-exports.updateBook = async (req, res) => {
-  const { id } = req.params;
-  const { titre, annee_publication, auteurs } = req.body;
-  try {
-    await bookRepository.updateBook(id, { titre, annee_publication, auteurs });
-    res.status(200).json({ id });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
 exports.getBookQuantity = async (req, res) => {
   const { id } = req.params;
   try {
@@ -57,17 +46,6 @@ exports.getBookQuantity = async (req, res) => {
     res.json({ quantiteTotale, quantiteDisponible });
   } catch (error) {
     res.status(500).json({ error: 'Erreur interne du serveur' });
-  }
-};
-
-exports.updateBookQuantity = async (req, res) => {
-  const { id } = req.params;
-  const { quantite } = req.body;
-  try {
-    await bookRepository.updateBookQuantity(id, quantite);
-    res.status(200).json({ id });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
   }
 };
 
