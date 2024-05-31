@@ -11,7 +11,7 @@ exports.getAllBooks = async (req, res) => {
     const books = await bookRepository.getAllBooks();
     res.json(books);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
 
@@ -22,10 +22,10 @@ exports.getBookById = async (req, res) => {
     if (book) {
       res.json(book);
     } else {
-      res.status(404).json({ error: 'Book not found' });
+      res.status(404).json({ error: 'Livre non trouvé' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
 
@@ -56,7 +56,7 @@ exports.getBookQuantity = async (req, res) => {
     const { quantiteTotale, quantiteDisponible } = await bookRepository.getBookQuantity(id);
     res.json({ quantiteTotale, quantiteDisponible });
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
 
