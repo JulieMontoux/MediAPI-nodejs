@@ -1,12 +1,21 @@
 const db = require('../db');
+const { generateETag } = require('../etag');
 
 // GET
-exports.getAllAuthors = () => {
-  return db('auteurs').select('*');
+exports.getAllAuthors = async () => {
+  const authors = await db('auteurs').select('*');
+  return authors.map(author => {
+    author.etag = generateETag(author);
+    return author;
+  });
 };
 
-exports.getAuthorById = (id) => {
-  return db('auteurs').where({ id }).first();
+exports.getAuthorById = async (id) => {
+  const author = await db('auteurs').where({ id }).first();
+  if (author) {
+    author.etag = generateETag(author);
+  }
+  return author;
 };
 
 // POST
@@ -16,8 +25,34 @@ exports.createAuthor = async ({ nom, prenom, annee_naissance }) => {
 };
 
 // PUT
-exports.updateAuthor = async (id, { nom, prenom, annee_naissance }) => {
-  await db('auteurs').where({ id }).update({ nom, prenom, annee_naissance });
+exports.updateAuthor = async (id, { nom, prenom, annee_naissance }, ifMatch) => {
+  const trx = await db.transaction();
+  try {
+    const author = await trx('auteurs').where({ id }).first();
+    if (!author) {
+      throw new Error('Auteur non trouvé');
+    }
+
+    const currentETag = generateETag(author);
+    console.log(`Stored ETag: '${currentETag}'`);
+    console.log(`If-Match header: '${ifMatch}'`);
+
+    if (currentETag !== ifMatch) {
+      throw new Error('ETag non correspondant');
+    }
+
+    const updateData = { nom, prenom, annee_naissance };
+    await trx('auteurs').where({ id }).update(updateData);
+    await trx.commit();
+
+    const updatedAuthor = await db('auteurs').where({ id }).first();
+    updatedAuthor.etag = generateETag(updatedAuthor);
+    return updatedAuthor;
+  } catch (error) {
+    await trx.rollback();
+    console.error('Erreur lors de la mise à jour de l\'auteur:', error);
+    throw new Error('Erreur lors de la mise à jour de l\'auteur');
+  }
 };
 
 // DELETE

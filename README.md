@@ -4,8 +4,8 @@
 
 - [x] Mise en place d’une API en NodeJS + ExpressJS écoutant sur le port 8000
 - [x] Sécurisation via API Key
-- [ ] Validation des modifications via ETag
-- [ ] 14 points d’entrée (attention corps de requêtes !)
+- [x] Validation des modifications via ETag
+- [x] 14 points d’entrée (attention corps de requêtes !)
 - [ ] Recherche (voir avec les auteurs !! )
 
 ### Livres

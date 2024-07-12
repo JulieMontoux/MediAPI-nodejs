@@ -1,29 +1,10 @@
 const db = require('../db');
 const bookRepository = require('../repository/BooksRepository');
 
-const generateETag = (data) => {
-  const crypto = require('crypto');
-  return crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
-};
-
 exports.getAllBooks = async (req, res) => {
   try {
     const books = await bookRepository.getAllBooks();
     res.json(books);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur interne du serveur' });
-  }
-};
-
-exports.getBookById = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const book = await bookRepository.getBookById(id);
-    if (book) {
-      res.json(book);
-    } else {
-      res.status(404).json({ error: 'Livre non trouvé' });
-    }
   } catch (error) {
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
@@ -69,17 +50,42 @@ exports.searchBooks = async (req, res) => {
   }
 };
 
+
+exports.getBookById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const book = await bookRepository.getBookById(id);
+    const etag = book.etag;
+    res.setHeader('ETag', etag);
+    res.json(book);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.updateBook = async (req, res) => {
   const { id } = req.params;
   const { titre, annee_publication, auteurs } = req.body;
-  console.log(`Requête de mise à jour reçue pour le livre avec ID ${id}`);
+  const ifMatch = req.headers['if-match'];
+
+  if (!ifMatch) {
+    return res.status(400).json({ error: 'If-Match header is required' });
+  }
+
+  console.log(`If-Match header: '${ifMatch}'`);
 
   try {
-    const updatedBook = await bookRepository.updateBook(id, { titre, annee_publication, auteurs });
-    console.log(`Livre avec ID ${id} mis à jour avec succès`);
+    const book = await bookRepository.getBookById(id);
+    console.log(`Current ETag: '${book.etag}'`);
+
+    if (book.etag !== ifMatch) {
+      return res.status(412).json({ error: 'ETag non correspondant' });
+    }
+
+    const updatedBook = await bookRepository.updateBook(id, { titre, annee_publication, auteurs }, ifMatch);
     res.json(updatedBook);
   } catch (error) {
-    console.error(`Erreur lors de la mise à jour du livre avec ID ${id}:`, error);
+    console.error('Erreur lors de la mise à jour du livre:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -87,14 +93,26 @@ exports.updateBook = async (req, res) => {
 exports.updateBookQuantity = async (req, res) => {
   const { id } = req.params;
   const { quantite } = req.body;
-  console.log(`Requête de mise à jour de la quantité reçue pour le livre avec ID ${id}`);
+  const ifMatch = req.headers['if-match'];
+
+  if (!ifMatch) {
+    return res.status(400).json({ error: 'If-Match header is required' });
+  }
+
+  console.log(`If-Match header: '${ifMatch}'`);
 
   try {
-    const updatedBook = await bookRepository.updateBookQuantity(id, quantite);
-    console.log(`Quantité du livre avec ID ${id} mise à jour avec succès`);
+    const book = await bookRepository.getBookById(id);
+    console.log(`Current ETag: '${book.etag}'`);
+
+    if (book.etag !== ifMatch) {
+      return res.status(412).json({ error: 'ETag non correspondant' });
+    }
+
+    const updatedBook = await bookRepository.updateBookQuantity(id, quantite, ifMatch);
     res.json(updatedBook);
   } catch (error) {
-    console.error(`Erreur lors de la mise à jour de la quantité du livre avec ID ${id}:`, error);
-    res.status(500).json({ error: 'Erreur lors de la mise à jour de la quantité du livre' });
+    console.error('Erreur lors de la mise à jour de la quantité du livre:', error);
+    res.status(500).json({ error: error.message });
   }
 };

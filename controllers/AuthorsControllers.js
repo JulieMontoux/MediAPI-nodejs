@@ -14,6 +14,9 @@ exports.getAuthorById = async (req, res) => {
   try {
     const author = await authorRepository.getAuthorById(id);
     if (author) {
+      const etag = author.etag;
+      console.log(`ETag: '${etag}'`);
+      res.setHeader('ETag', etag);
       res.json(author);
     } else {
       res.status(404).json({ error: 'Auteur non trouvé' });
@@ -40,16 +43,29 @@ exports.createAuthor = async (req, res) => {
 exports.updateAuthor = async (req, res) => {
   const { id } = req.params;
   const { nom, prenom, annee_naissance } = req.body;
+  const ifMatch = req.headers['if-match'];
 
   if (!nom || !prenom || !annee_naissance) {
     return res.status(400).json({ error: "Les champs 'nom', 'prenom' et 'annee_naissance' sont obligatoires" });
   }
 
+  if (!ifMatch) {
+    return res.status(400).json({ error: 'If-Match header is required' });
+  }
+
   try {
-    await authorRepository.updateAuthor(id, { nom, prenom, annee_naissance });
-    const updatedAuthor = await authorRepository.getAuthorById(id);
+    const author = await authorRepository.getAuthorById(id);
+    if (!author) {
+      return res.status(404).json({ error: 'Auteur non trouvé' });
+    }
+
+    console.log(`Current ETag: '${author.etag}'`);
+    console.log(`If-Match header: '${ifMatch}'`);
+
+    const updatedAuthor = await authorRepository.updateAuthor(id, { nom, prenom, annee_naissance }, ifMatch);
     res.json({ success: true, data: updatedAuthor });
   } catch (error) {
+    console.error('Erreur lors de la mise à jour de l\'auteur:', error);
     res.status(400).json({ error: error.message });
   }
 };
