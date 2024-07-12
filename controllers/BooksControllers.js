@@ -1,19 +1,24 @@
-const db = require('../db');
-const bookRepository = require('../repository/BooksRepository');
+const db = require("../db");
+const bookRepository = require("../repository/BooksRepository");
 
 exports.getAllBooks = async (req, res) => {
   try {
     const books = await bookRepository.getAllBooks();
     res.json(books);
   } catch (error) {
-    res.status(500).json({ error: 'Erreur interne du serveur' });
+    res.status(500).json({ error: "Erreur interne du serveur" });
   }
 };
 
 exports.createBook = async (req, res) => {
   const { titre, annee_publication, quantite = 1, auteurs } = req.body;
   try {
-    const bookId = await bookRepository.createBook({ titre, annee_publication, quantite, auteurs });
+    const bookId = await bookRepository.createBook({
+      titre,
+      annee_publication,
+      quantite,
+      auteurs,
+    });
     res.status(201).json({ id: bookId });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -23,10 +28,11 @@ exports.createBook = async (req, res) => {
 exports.getBookQuantity = async (req, res) => {
   const { id } = req.params;
   try {
-    const { quantiteTotale, quantiteDisponible } = await bookRepository.getBookQuantity(id);
+    const { quantiteTotale, quantiteDisponible } =
+      await bookRepository.getBookQuantity(id);
     res.json({ quantiteTotale, quantiteDisponible });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur interne du serveur' });
+    res.status(500).json({ error: "Erreur interne du serveur" });
   }
 };
 
@@ -45,7 +51,7 @@ exports.getBookById = async (req, res) => {
   try {
     const book = await bookRepository.getBookById(id);
     const etag = book.etag;
-    res.setHeader('ETag', etag);
+    res.setHeader("ETag", etag);
     res.json(book);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -55,10 +61,10 @@ exports.getBookById = async (req, res) => {
 exports.updateBook = async (req, res) => {
   const { id } = req.params;
   const { titre, annee_publication, auteurs } = req.body;
-  const ifMatch = req.headers['if-match'];
+  const ifMatch = req.headers["if-match"];
 
   if (!ifMatch) {
-    return res.status(400).json({ error: 'If-Match header is required' });
+    return res.status(400).json({ error: "If-Match header is required" });
   }
 
   console.log(`If-Match header: '${ifMatch}'`);
@@ -68,13 +74,17 @@ exports.updateBook = async (req, res) => {
     console.log(`Current ETag: '${book.etag}'`);
 
     if (book.etag !== ifMatch) {
-      return res.status(412).json({ error: 'ETag non correspondant' });
+      return res.status(412).json({ error: "ETag non correspondant" });
     }
 
-    const updatedBook = await bookRepository.updateBook(id, { titre, annee_publication, auteurs }, ifMatch);
+    const updatedBook = await bookRepository.updateBook(
+      id,
+      { titre, annee_publication, auteurs },
+      ifMatch
+    );
     res.json(updatedBook);
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du livre:', error);
+    console.error("Erreur lors de la mise à jour du livre:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -82,10 +92,10 @@ exports.updateBook = async (req, res) => {
 exports.updateBookQuantity = async (req, res) => {
   const { id } = req.params;
   const { quantite } = req.body;
-  const ifMatch = req.headers['if-match'];
+  const ifMatch = req.headers["if-match"];
 
   if (!ifMatch) {
-    return res.status(400).json({ error: 'If-Match header is required' });
+    return res.status(400).json({ error: "If-Match header is required" });
   }
 
   console.log(`If-Match header: '${ifMatch}'`);
@@ -95,13 +105,20 @@ exports.updateBookQuantity = async (req, res) => {
     console.log(`Current ETag: '${book.etag}'`);
 
     if (book.etag !== ifMatch) {
-      return res.status(412).json({ error: 'ETag non correspondant' });
+      return res.status(412).json({ error: "ETag non correspondant" });
     }
 
-    const updatedBook = await bookRepository.updateBookQuantity(id, quantite, ifMatch);
+    const updatedBook = await bookRepository.updateBookQuantity(
+      id,
+      quantite,
+      ifMatch
+    );
     res.json(updatedBook);
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de la quantité du livre:', error);
+    console.error(
+      "Erreur lors de la mise à jour de la quantité du livre:",
+      error
+    );
     res.status(500).json({ error: error.message });
   }
 };
@@ -110,16 +127,18 @@ exports.searchBooks = async (req, res) => {
   const { mots } = req.query;
 
   if (!mots) {
-    return res.status(400).json({ error: "Le paramètre 'mots' est obligatoire pour la recherche" });
+    return res
+      .status(400)
+      .json({ error: "Le paramètre 'mots' est obligatoire pour la recherche" });
   }
 
   try {
-    console.log('Searching for books with mots:', mots);
+    console.log("Searching for books with mots:", mots);
     const books = await bookRepository.searchBooks(mots);
-    console.log('Found books:', books);
+    console.log("Found books:", books);
     res.json(books);
   } catch (error) {
-    console.error('Error in searchBooks controller:', error);
-    res.status(500).json({ error: 'Erreur interne du serveur' });
+    console.error("Error in searchBooks controller:", error);
+    res.status(500).json({ error: "Erreur interne du serveur" });
   }
 };
