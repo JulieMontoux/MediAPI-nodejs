@@ -16,14 +16,17 @@ app.use(function (req, res, next) {
     next();
   });
 
+
 const authenticate = (req, res, next) => {
   const apiKey = req.headers['authorization'];
+  console.log('Authorization header:', apiKey);
   if (apiKey === 'Bearer ' + API_KEY) {
     next();
   } else {
     res.status(401).json({ error: 'Unauthorized' });
   }
 };
+
 
 app.use(authenticate);
 app.use('/api', bookRoutes);

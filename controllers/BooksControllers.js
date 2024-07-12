@@ -68,3 +68,33 @@ exports.searchBooks = async (req, res) => {
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };
+
+exports.updateBook = async (req, res) => {
+  const { id } = req.params;
+  const { titre, auteurs } = req.body;
+  console.log(`Requête de mise à jour reçue pour le livre avec ID ${id}`);
+
+  try {
+    const updatedBook = await bookRepository.updateBook(id, { titre, auteurs });
+    console.log(`Livre avec ID ${id} mis à jour avec succès`);
+    res.json(updatedBook);
+  } catch (error) {
+    console.error(`Erreur lors de la mise à jour du livre avec ID ${id}:`, error);
+    res.status(500).json({ error: 'Erreur lors de la mise à jour du livre' });
+  }
+};
+
+exports.updateBookQuantity = async (req, res) => {
+  const { id } = req.params;
+  const { quantite } = req.body;
+  console.log(`Requête de mise à jour de la quantité reçue pour le livre avec ID ${id}`);
+
+  try {
+    const updatedBook = await bookRepository.updateBookQuantity(id, quantite);
+    console.log(`Quantité du livre avec ID ${id} mise à jour avec succès`);
+    res.json(updatedBook);
+  } catch (error) {
+    console.error(`Erreur lors de la mise à jour de la quantité du livre avec ID ${id}:`, error);
+    res.status(500).json({ error: 'Erreur lors de la mise à jour de la quantité du livre' });
+  }
+};

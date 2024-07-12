@@ -94,3 +94,64 @@ exports.searchBooks = async (mots) => {
 
   return books;
 };
+
+// PUT
+exports.updateBook = async (id, { titre, auteurs }) => {
+  console.log(`Début de la mise à jour du livre avec ID ${id}`);
+  
+  if (!Array.isArray(auteurs)) {
+    throw new TypeError('Auteurs doit être un tableau');
+  }
+  
+  const trx = await db.transaction();
+  try {
+    // Vérifier l'existence des auteurs
+    for (const authorId of auteurs) {
+      const author = await authorRepository.getAuthorById(authorId, trx);
+      if (!author) {
+        console.log(`Auteur avec ID ${authorId} n'existe pas`);
+        throw new Error(`L'auteur avec l'identifiant ${authorId} n'existe pas`);
+      }
+    }
+
+    // Mettre à jour le livre
+    console.log(`Mise à jour du titre du livre avec ID ${id}`);
+    const updatedBook = await trx('livres').where({ id }).update({ titre }).returning('*');
+
+    // Mettre à jour les relations auteur-livre
+    console.log(`Mise à jour des relations auteur-livre pour le livre avec ID ${id}`);
+    await trx('auteur_livre').where({ id_livre: id }).del();
+    for (const authorId of auteurs) {
+      await trx('auteur_livre').insert({ id_livre: id, id_auteur: authorId }).transacting(trx);
+    }
+
+    await trx.commit();
+    console.log(`Livre avec ID ${id} mis à jour avec succès`);
+    return updatedBook[0];
+  } catch (error) {
+    await trx.rollback();
+    console.error(`Erreur lors de la mise à jour du livre avec ID ${id}:`, error);
+    throw new Error('Erreur lors de la mise à jour du livre');
+  }
+};
+exports.updateBookQuantity = async (id, quantite) => {
+  console.log(`Début de la mise à jour de la quantité pour le livre avec ID ${id}`);
+  const trx = await db.transaction();
+  try {
+    const empruntsEnCours = await trx('emprunt').where({ id_livre: id, date_retour: null }).count('id as empruntsCount');
+    if (quantite < empruntsEnCours[0].empruntsCount) {
+      console.log(`Nouvelle quantité ${quantite} est inférieure au nombre d'emprunts en cours pour le livre avec ID ${id}`);
+      throw new Error('La nouvelle quantité est inférieure au nombre d’emprunts en cours');
+    }
+
+    console.log(`Mise à jour de la quantité pour le livre avec ID ${id}`);
+    const updatedBook = await trx('livres').where({ id }).update({ quantite }).returning('*').transacting(trx);
+    await trx.commit();
+    console.log(`Quantité du livre avec ID ${id} mise à jour avec succès`);
+    return updatedBook[0];
+  } catch (error) {
+    await trx.rollback();
+    console.error(`Erreur lors de la mise à jour de la quantité du livre avec ID ${id}:`, error);
+    throw new Error('Erreur lors de la mise à jour de la quantité du livre');
+  }
+};

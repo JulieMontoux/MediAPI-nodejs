@@ -8,8 +8,8 @@ router.get('/livre/:id/quantite', bookController.getBookQuantity);
 
 router.post('/livre', bookController.createBook);
 
-//router.put('/livre/:id', bookController.updateBook);
-//router.put('/livre/:id/quantite', bookController.updateBookQuantity);
+router.put('/livre/:id', bookController.updateBook);
+router.put('/livre/:id/quantite', bookController.updateBookQuantity);
 
 router.delete('/livre/:id', bookController.deleteBook);
 
