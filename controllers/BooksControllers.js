@@ -40,17 +40,6 @@ exports.deleteBook = async (req, res) => {
   }
 };
 
-exports.searchBooks = async (req, res) => {
-  const { mots } = req.params;
-  try {
-    const books = await bookRepository.searchBooks(mots);
-    res.json(books);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur interne du serveur' });
-  }
-};
-
-
 exports.getBookById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -114,5 +103,23 @@ exports.updateBookQuantity = async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la mise à jour de la quantité du livre:', error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.searchBooks = async (req, res) => {
+  const { mots } = req.query;
+
+  if (!mots) {
+    return res.status(400).json({ error: "Le paramètre 'mots' est obligatoire pour la recherche" });
+  }
+
+  try {
+    console.log('Searching for books with mots:', mots);
+    const books = await bookRepository.searchBooks(mots);
+    console.log('Found books:', books);
+    res.json(books);
+  } catch (error) {
+    console.error('Error in searchBooks controller:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 };

@@ -13,6 +13,6 @@ router.put('/livre/:id/quantite', bookController.updateBookQuantity);
 
 router.delete('/livre/:id', bookController.deleteBook);
 
-router.get('/recherche/:mots', bookController.searchBooks);
+router.get('/livres/recherche', bookController.searchBooks);
 
 module.exports = router;

@@ -164,35 +164,43 @@ exports.deleteBook = async (id) => {
 
 // RECHERCHE
 exports.searchBooks = async (mots) => {
-  const words = mots.split(' ');
+  try {
+    const words = mots.split(' ');
 
-  const books = await db('livres')
-    .leftJoin('auteur_livre', 'livres.id', 'auteur_livre.id_livre')
-    .leftJoin('auteurs', 'auteur_livre.id_auteur', 'auteurs.id')
-    .where(builder => {
+    const books = await db('livres')
+      .leftJoin('auteur_livre', 'livres.id', 'auteur_livre.id_livre')
+      .leftJoin('auteurs', 'auteur_livre.id_auteur', 'auteurs.id')
+      .select('livres.*', 'auteurs.nom as auteur_nom', 'auteurs.prenom as auteur_prenom');
+
+    console.log('Books fetched from database:', books);
+
+    const booksWithScore = books.map(book => {
+      let score = 0;
       words.forEach(word => {
-        builder.orWhere('livres.titre', 'like', `%${word}%`)
-          .orWhere('auteurs.nom', 'like', `%${word}%`)
-          .orWhere('auteurs.prenom', 'like', `%${word}%`);
+        if (book.titre && book.titre.toLowerCase().includes(word.toLowerCase())) score += 2;
+        if (book.auteur_nom && book.auteur_nom.toLowerCase().includes(word.toLowerCase())) score += 1;
+        if (book.auteur_prenom && book.auteur_prenom.toLowerCase().includes(word.toLowerCase())) score += 1;
       });
-    })
-    .select('livres.*', 'auteurs.nom as auteur_nom', 'auteurs.prenom as auteur_prenom');
+      return { ...book, score };
+    });
 
-  books.sort((a, b) => {
-    const aMatches = words.reduce((acc, word) => {
-      return acc + (a.titre.includes(word) ? 1 : 0) +
-        (a.auteur_nom.includes(word) ? 1 : 0) +
-        (a.auteur_prenom.includes(word) ? 1 : 0);
-    }, 0);
+    console.log('Books with scores:', booksWithScore);
 
-    const bMatches = words.reduce((acc, word) => {
-      return acc + (b.titre.includes(word) ? 1 : 0) +
-        (b.auteur_nom.includes(word) ? 1 : 0) +
-        (b.auteur_prenom.includes(word) ? 1 : 0);
-    }, 0);
+    // Filtrer les livres avec un score supérieur à 0
+    const filteredBooks = booksWithScore.filter(book => book.score > 0);
 
-    return bMatches - aMatches;
-  });
+    // Supprimer les doublons basés sur l'ID du livre
+    const uniqueBooks = Array.from(new Set(filteredBooks.map(book => book.id)))
+      .map(id => filteredBooks.find(book => book.id === id));
 
-  return books;
+    // Trier les livres par score
+    uniqueBooks.sort((a, b) => b.score - a.score);
+
+    console.log('Sorted books:', uniqueBooks);
+
+    return uniqueBooks;
+  } catch (error) {
+    console.error('Error in searchBooks:', error);
+    throw error;
+  }
 };

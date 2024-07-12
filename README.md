@@ -6,7 +6,7 @@
 - [x] Sécurisation via API Key
 - [x] Validation des modifications via ETag
 - [x] 14 points d’entrée (attention corps de requêtes !)
-- [ ] Recherche (voir avec les auteurs !! )
+- [x] Recherche (voir avec les auteurs !! )
 
 ### Livres
 
