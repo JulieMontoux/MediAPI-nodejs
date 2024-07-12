@@ -71,16 +71,16 @@ exports.searchBooks = async (req, res) => {
 
 exports.updateBook = async (req, res) => {
   const { id } = req.params;
-  const { titre, auteurs } = req.body;
+  const { titre, annee_publication, auteurs } = req.body;
   console.log(`Requête de mise à jour reçue pour le livre avec ID ${id}`);
 
   try {
-    const updatedBook = await bookRepository.updateBook(id, { titre, auteurs });
+    const updatedBook = await bookRepository.updateBook(id, { titre, annee_publication, auteurs });
     console.log(`Livre avec ID ${id} mis à jour avec succès`);
     res.json(updatedBook);
   } catch (error) {
     console.error(`Erreur lors de la mise à jour du livre avec ID ${id}:`, error);
-    res.status(500).json({ error: 'Erreur lors de la mise à jour du livre' });
+    res.status(500).json({ error: error.message });
   }
 };
 

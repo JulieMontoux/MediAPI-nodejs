@@ -6,16 +6,16 @@
 - [x] Sécurisation via API Key
 - [ ] Validation des modifications via ETag
 - [ ] 14 points d’entrée (attention corps de requêtes !)
-- [x] Recherche
+- [ ] Recherche (voir avec les auteurs !! )
 
 ### Livres
 
 - [x] **GET /livre** : Retourne la liste des livres avec les informations des auteurs.
 - [x] **GET /livre/{id}** : Retourne la fiche du livre portant l’ID indiquée, avec les informations des auteurs associés.
 - [x] **POST /livre** : Crée le livre selon les informations du corps de la requête. Les auteurs sont fournis par leurs IDs. La quantité en stock est initialisée à 1 si elle n’est pas fournie. Retourne une erreur si un auteur n’existe pas.
-- [ ] **PUT /livre/{id}** : Modifie le livre selon les informations du corps de la requête. Les auteurs sont fournis par leurs IDs. La quantité en stock n’est pas modifiable. Retourne une erreur si un auteur n’existe pas.
+- [x] **PUT /livre/{id}** : Modifie le livre selon les informations du corps de la requête. Les auteurs sont fournis par leurs IDs. La quantité en stock n’est pas modifiable. Retourne une erreur si un auteur n’existe pas.
 - [x] **GET /livre/{id}/quantite** : Retourne la quantité totale et la quantité disponible pour le livre. Quantité disponible = quantité totale - nombre d’emprunts en cours.
-- [ ] **PUT /livre/{id}/quantite** : Modifie la quantité totale pour le livre. Retourne une erreur si la nouvelle quantité est inférieure au nombre d’emprunts actuellement en cours.
+- [x] **PUT /livre/{id}/quantite** : Modifie la quantité totale pour le livre. Retourne une erreur si la nouvelle quantité est inférieure au nombre d’emprunts actuellement en cours.
 - [x] **DELETE /livre/{id}** : Supprime le livre. Retourne une erreur si des emprunts sont en cours
 
 ### Auteurs
