@@ -64,7 +64,7 @@ exports.updateAuthor = async (req, res) => {
   }
 
   if (!ifMatch) {
-    return res.status(400).json({ error: "If-Match header is required" });
+    return res.status(400).json({ error: "If-Match header requis" });
   }
 
   try {

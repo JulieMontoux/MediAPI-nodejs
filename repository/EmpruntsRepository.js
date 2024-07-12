@@ -47,7 +47,6 @@ exports.createEmprunt = async ({ id_livre, email, nom, prenom }) => {
     }
     const etag = generateETag(emprunt);
     emprunt.etag = etag;
-    console.log(`Generated ETag: '${etag}'`);
     return emprunt;
   } catch (error) {
     await trx.rollback();
@@ -64,7 +63,6 @@ exports.updateEmprunt = async (id, ifMatch) => {
       throw new Error("Emprunt non trouvé");
     }
 
-    console.log("Emprunt data before update:", emprunt);
     const currentETag = generateETag(emprunt);
     console.log(`Stored ETag: '${currentETag}'`);
     console.log(`If-Match header: '${ifMatch}'`);
@@ -78,9 +76,7 @@ exports.updateEmprunt = async (id, ifMatch) => {
     await trx.commit();
 
     const updatedEmprunt = await db("emprunt").where({ id }).first();
-    console.log("Updated Emprunt data:", updatedEmprunt);
     updatedEmprunt.etag = currentETag;
-    console.log(`Returned ETag: '${currentETag}'`);
     return updatedEmprunt;
   } catch (error) {
     await trx.rollback();

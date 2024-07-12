@@ -19,7 +19,6 @@ exports.createEmprunt = async (req, res) => {
       nom,
       prenom,
     });
-    console.log("Created Emprunt:", emprunt);
     res.setHeader("ETag", emprunt.etag);
     res.status(201).json({ id: emprunt.id, etag: emprunt.etag });
   } catch (error) {
@@ -40,7 +39,6 @@ exports.updateEmprunt = async (req, res) => {
 
   try {
     const emprunt = await empruntRepository.updateEmprunt(id, ifMatch);
-    console.log(`Returned ETag: '${emprunt.etag}'`);
     res.setHeader("ETag", emprunt.etag);
     res
       .status(200)

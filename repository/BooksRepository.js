@@ -204,8 +204,6 @@ exports.searchBooks = async (mots) => {
         "auteurs.prenom as auteur_prenom"
       );
 
-    console.log("Books fetched from database:", books);
-
     const booksWithScore = books.map((book) => {
       let score = 0;
       words.forEach((word) => {
@@ -225,8 +223,6 @@ exports.searchBooks = async (mots) => {
       return { ...book, score };
     });
 
-    console.log("Books with scores:", booksWithScore);
-
     const filteredBooks = booksWithScore.filter((book) => book.score > 0);
 
     const uniqueBooks = Array.from(
@@ -235,11 +231,8 @@ exports.searchBooks = async (mots) => {
 
     uniqueBooks.sort((a, b) => b.score - a.score);
 
-    console.log("Sorted books:", uniqueBooks);
-
     return uniqueBooks;
   } catch (error) {
-    console.error("Error in searchBooks:", error);
     throw error;
   }
 };

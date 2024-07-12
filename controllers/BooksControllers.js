@@ -64,7 +64,7 @@ exports.updateBook = async (req, res) => {
   const ifMatch = req.headers["if-match"];
 
   if (!ifMatch) {
-    return res.status(400).json({ error: "If-Match header is required" });
+    return res.status(400).json({ error: "If-Match header requis" });
   }
 
   console.log(`If-Match header: '${ifMatch}'`);
@@ -95,7 +95,7 @@ exports.updateBookQuantity = async (req, res) => {
   const ifMatch = req.headers["if-match"];
 
   if (!ifMatch) {
-    return res.status(400).json({ error: "If-Match header is required" });
+    return res.status(400).json({ error: "If-Match header requis" });
   }
 
   console.log(`If-Match header: '${ifMatch}'`);
@@ -133,12 +133,9 @@ exports.searchBooks = async (req, res) => {
   }
 
   try {
-    console.log("Searching for books with mots:", mots);
     const books = await bookRepository.searchBooks(mots);
-    console.log("Found books:", books);
     res.json(books);
   } catch (error) {
-    console.error("Error in searchBooks controller:", error);
     res.status(500).json({ error: "Erreur interne du serveur" });
   }
 };

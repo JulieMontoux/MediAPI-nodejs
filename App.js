@@ -22,7 +22,7 @@ const authenticate = (req, res, next) => {
   if (apiKey === "Bearer " + API_KEY) {
     next();
   } else {
-    res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Non autorisé" });
   }
 };
 
@@ -37,5 +37,5 @@ app.get("/api", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}/api/`);
+  console.log(`Serveur tourne sur http://localhost:${PORT}/api/`);
 });
